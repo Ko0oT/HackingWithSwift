@@ -45,6 +45,8 @@ class DetailViewController: UIViewController {
         title = selectedImage
         //добавляем заголовок
         
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareTapped))
+        
         navigationController?.navigationBar.prefersLargeTitles = true
         //делаем шрифт крупным
         
@@ -69,6 +71,17 @@ class DetailViewController: UIViewController {
         imageView.Bottom == view.Bottom
     }
     
+    @objc func shareTapped() {
+        guard let image = imageView.image?.jpegData(compressionQuality: 0.8) else {
+            print("No image found")
+            return
+        }
+
+        let vc = UIActivityViewController(activityItems: [image], applicationActivities: [])
+        vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem // для iPad
+//        На iPhone контроллеры вида активности автоматически занимают весь экран, но на iPad они отображаются как всплывающее окно, позволяющее пользователю видеть то, над чем он работал, ниже. Эта строка кода сообщает iOS о необходимости привязать контроллер вида активности к элементу кнопки правой панели (наша кнопка «Поделиться»), но это действует только на iPad — на iPhone это игнорируется.
+        present(vc, animated: true)
+    }
     
 
     /*
